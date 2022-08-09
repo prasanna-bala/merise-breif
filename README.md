@@ -56,7 +56,7 @@ MERISE présente dans sa démarche d’analyse trois cycles fondamentaux :
 
     Et parfois des remarques ou observations complémentaires (par exemple si une donnée est strictement supérieure à 0, etc).
   
-  <p align = 'center' ><img src="Img/Entity.jpg" width="200" alt="merise Logo" /> </P>
+  <p align = 'center' ><img src="Img/Entity.png" width="200" alt="merise Logo" /> </P>
 
 ## Règles de gestion
   
