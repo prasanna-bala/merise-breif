@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="" target="blank"><img src="JMeriseLogoPetit.png" width="200" alt="merise Logo" /></a>
+  <a href="" target="blank"><img src="Img/JMeriseLogoPetit.png" width="200" alt="merise Logo" /></a>
 </p>
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
@@ -26,12 +26,12 @@ gouvernementales, commerciales et industrielles françaises l'ont adopté.
 ```bash
  
 MERISE présente dans sa démarche d’analyse trois cycles fondamentaux :
-     le cycle d’abstraction,
-     le cycle de vie (de developpement),
-     le cycle de décision.
+    - le cycle d’abstraction,
+    - le cycle de vie (de developpement),
+    - le cycle de décision.
   
 ```
-  <p align = 'center' ><img src="Synoptique_Methode_Merise_2.jpg" width="200" alt="merise Logo" /> </P>
+  <p align = 'center' ><img src="Img/Synoptique_Methode_Merise_2.jpg" width="200" alt="merise Logo" /> </P>
 
 ## Le Dictionnaire de Données
   Le dictionnaire des données est un document qui regroupe toutes les données que vous aurez à conserver dans votre base (et qui figureront donc dans le MCD). Pour chaque donnée, il indique :
@@ -95,8 +95,6 @@ Votre mission est de concevoir la base de données d’une plateforme de formati
 
 -  Prasanna Balasubramaniyam
 
-## License
-
-Nest is [MIT licensed](LICENSE).
+ 
 
  
