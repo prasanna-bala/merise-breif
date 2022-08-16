@@ -104,7 +104,7 @@ MERISE présente dans sa démarche d’analyse trois cycles fondamentaux :
 Le Modèle Physique de Données est la transformation du MLD dans le format d'une base de données. Dans le MLD, nous avons découvert les tables, les champs, et les clefs. Le MPD est le schéma correspondant à une base de données spécifique : Oracle, MySQL, PostgreSQL, etc... Un MLD pourra générer plusieurs MPD, si vous décidez d'adapter votre base de données à votre client.
 
 Le résultat final sera un script SQL qui permettra de créer la base dans le SGBDR. Ici va apparaître la valeur et longueur des données. Le résultat est beaucoup moins lisible. 
-  
+  ```bash
       apprenant = (apprenant_id SMALLINT, apprenant_nom VARCHAR(50) , apprenant_prenom VARCHAR(50) , apprenant_address VARCHAR(50) , apprenant_email VARCHAR(50) , 
         apprenant_password VARCHAR(50) , apprenant_datedenaissance DATE, formation_id SMALLINT, subscritiondate DATE, status_ VARCHAR(50) , createddate DATE, 
         updateddate DATE);
@@ -115,13 +115,14 @@ Le résultat final sera un script SQL qui permettra de créer la base dans le SG
               , course_material_type VARCHAR(50) , module_id SMALLINT);
       Evaluation = (Evaluation_id SMALLINT, module_id SMALLINT, apprenant_id VARCHAR(50) , evaluation_date DATE, evaluation_status VARCHAR(50) , formationid SMALLINT);
       Formation = (formation_Id SMALLINT, formation_name VARCHAR(50) , formation_description VARCHAR(250) , formation_startdate DATE, formation_enddate DATE, 
-                          formation_status VARCHAR(50) , forgeinkey formateurs_id);
+                          formation_status VARCHAR(50) , #formateurs_id);
       participer = (#apprenant_id, formationindex SMALLINT, #formation_Id);
       course = (#formation_Id, #Module_id);
       include = (#Module_id, #course_material_id);
       evaluae = (#apprenant_id, #Evaluation_id, apprenant_evaluationindex SMALLINT);
       exame = (#Module_id, #Evaluation_id, evaluationmoduleindex SMALLINT);
 
+  ```
  
  
   <p align = 'center' ><img src="Img/MDP1.png" width="200" alt="merise Logo" /> </P>
