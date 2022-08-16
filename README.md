@@ -125,7 +125,7 @@ Le résultat final sera un script SQL qui permettra de créer la base dans le SG
   ```
  
  
-  <p align = 'center' ><img src="Img/MDP1.png" width="200" alt="merise Logo" /> </P>
+  <p align = 'center' ><img src="Img/MPD1.png" width="200" alt="merise Logo" /> </P>
  
 ## SQL Script 
   ```bash
