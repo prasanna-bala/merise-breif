@@ -56,7 +56,7 @@ MERISE présente dans sa démarche d’analyse trois cycles fondamentaux :
 
     Et parfois des remarques ou observations complémentaires (par exemple si une donnée est strictement supérieure à 0, etc).
   
-  <p align = 'center' ><img src="Img/Entity.png" width="200" alt="merise Logo" /> </P>
+  <p align = 'center' ><img src="Img/Entity.png" width="200" alt=" " /> </P>
 
 ## Règles de gestion
   
@@ -64,18 +64,19 @@ MERISE présente dans sa démarche d’analyse trois cycles fondamentaux :
   Une règle de gestion peut représenter une disposition légale, une exigence formulée par un client ou un article de règlement interne. A l'origine des règles de gestion, on trouve souvent de simples observations telles que "les clients appellent un numéro vert pour passer commande". Lors du processus de conception, ces observations sont formulées plus en détails (par exemple, "quelles sont les informations fournies par un client lorsqu'il passe commande ou combien un client peut-il dépenser en fonction du crédit dont il dispose".
 
   Les règles de gestion complètent vos diagrammes avec des informations qui ne peuvent pas être facilement représentées de façon graphique, et peuvent guider la création d'un modèle. Par exemple, la règle "un employé ne peut appartenir qu'à une seule division à la fois" peut vous aider à créer de façon graphique le lien entre un employé et une division. Les règles de gestion sont générées dans le cadre de la génération intermodèle et peuvent être spécifiées plus en détails dans le modèle généré.
-  Il existe trois façons d'utiliser des règles de gestion dans un modèle de données :
+ 
 
-    Appliquer des règles de gestion à un objet de modèle comme faisant partie de sa définition (voir Application d'une règle de gestion à un objet de modèle).
-    [MPD uniquement] Créer une expression serveur pour une règle de gestion qui peut être générée dans une base de données (voir Création et attachement d'une règle de contrainte).
-    [MPD uniquement] Insérer une expression de règle de gestion dans un trigger ou dans un procédure stockée en utilisant les macros .CLIENTEXPRESSION ou .SERVEREXPRESSION macros (voir Variables et macros de MPD).
-
-  Avant de créer des règles de gestion, il peut s'avérer utile de répondre aux questions suivantes :
-
-    Existe-t-il des procédures obligatoires pour mon système ?
-    Comment puis-je clairement et de façon concise définir les spécifications pour mon projet ?
-    Des contraintes limitent-elles mes choix ?
-    C'est règle est-elle une définition, un fait, une formule ou une règle de validation ?
+    - Un apprenant est caractérisé par un code d'inscription unique (UUID), un nom, un prénom, une adresse, une date de naissance.
+    - Un formateur est caractérisé par un code unique (auto-incrément), un nom, un prénom.
+    - Un module est caractérisé par un numéro en Sémantique Versionning, un intitulé, un objectif pédagogique, un contenu (un texte et/ou une image et/ou une vidéo), une durée (heures), - - un ou plusieurs tags, un auteur (formateur).
+    - Une formation est un nom.
+    - Un module contient un ou plusieurs contenus et un contenu à un seul module.
+    - Un module contient un ou plusieurs tags et un tag à un plusieurs module.
+    - Un module peut concerner un ou plusieurs formations et une formation à un ou plusieurs module.
+    - Une formation est organisé par un seul formateur et un formateur organise une à plusieurs formations.
+    - Un formateur peut être auteur d'un ou plusieurs modules et un module est écris par un seul formateur.
+    - Un apprenant peut s'inscrire à un ou plusieurs formations et une formation à un ou plusieurs apprenants.
+    - Un apprenant est évaluer pour un ou plusieurs modules (avec un état de fin de module: OK / KO) et un module est évaluer par zéro ou plusieurs apprenants.
 
 
 ## MCD -Modèle conceptuel des données
@@ -103,12 +104,145 @@ MERISE présente dans sa démarche d’analyse trois cycles fondamentaux :
 Le Modèle Physique de Données est la transformation du MLD dans le format d'une base de données. Dans le MLD, nous avons découvert les tables, les champs, et les clefs. Le MPD est le schéma correspondant à une base de données spécifique : Oracle, MySQL, PostgreSQL, etc... Un MLD pourra générer plusieurs MPD, si vous décidez d'adapter votre base de données à votre client.
 
 Le résultat final sera un script SQL qui permettra de créer la base dans le SGBDR. Ici va apparaître la valeur et longueur des données. Le résultat est beaucoup moins lisible. 
+  
+      apprenant = (apprenant_id SMALLINT, apprenant_nom VARCHAR(50) , apprenant_prenom VARCHAR(50) , apprenant_address VARCHAR(50) , apprenant_email VARCHAR(50) , 
+        apprenant_password VARCHAR(50) , apprenant_datedenaissance DATE, formation_id SMALLINT, subscritiondate DATE, status_ VARCHAR(50) , createddate DATE, 
+        updateddate DATE);
+      formateur = (formateurs_id SMALLINT, formateurs_name VARCHAR(50) , formateurs_surname VARCHAR(50) , formateurs_status VARCHAR(50) , 
+              formateurs_competance VARCHAR(100) );
+      Module_formation = (Module_id SMALLINT, Module_name VARCHAR(100) , formation_id SMALLINT, Module_startdate DATE, Module_enddate DATE, Module_status VARCHAR(50) );
+      course_material = (course_material_id SMALLINT, course_material_name VARCHAR(50) , course_material_file VARCHAR(100) , course_material_status VARCHAR(50) 
+              , course_material_type VARCHAR(50) , module_id SMALLINT);
+      Evaluation = (Evaluation_id SMALLINT, module_id SMALLINT, apprenant_id VARCHAR(50) , evaluation_date DATE, evaluation_status VARCHAR(50) , formationid SMALLINT);
+      Formation = (formation_Id SMALLINT, formation_name VARCHAR(50) , formation_description VARCHAR(250) , formation_startdate DATE, formation_enddate DATE, 
+                          formation_status VARCHAR(50) , forgeinkey formateurs_id);
+      participer = (#apprenant_id, formationindex SMALLINT, #formation_Id);
+      course = (#formation_Id, #Module_id);
+      include = (#Module_id, #course_material_id);
+      evaluae = (#apprenant_id, #Evaluation_id, apprenant_evaluationindex SMALLINT);
+      exame = (#Module_id, #Evaluation_id, evaluationmoduleindex SMALLINT);
 
+ 
  
   <p align = 'center' ><img src="Img/MDP1.png" width="200" alt="merise Logo" /> </P>
  
 ## SQL Script 
+  ```bash
+ 
+      CREATE TABLE apprenant(
+        apprenant_id SMALLINT,
+        apprenant_nom VARCHAR(50)  NOT NULL,
+        apprenant_prenom VARCHAR(50)  NOT NULL,
+        apprenant_address VARCHAR(50)  NOT NULL,
+        apprenant_email VARCHAR(50)  NOT NULL,
+        apprenant_password VARCHAR(50)  NOT NULL,
+        apprenant_datedenaissance DATE,
+        formation_id SMALLINT NOT NULL,
+        subscritiondate DATE NOT NULL,
+        status_ VARCHAR(50)  NOT NULL,
+        createddate DATE NOT NULL,
+        updateddate DATE,
+        PRIMARY KEY(apprenant_id),
+        UNIQUE(apprenant_email)
+      );
 
+      CREATE TABLE formateur(
+        formateurs_id SMALLINT,
+        formateurs_name VARCHAR(50)  NOT NULL,
+        formateurs_surname VARCHAR(50)  NOT NULL,
+        formateurs_status VARCHAR(50)  NOT NULL,
+        formateurs_competance VARCHAR(100)  NOT NULL,
+        PRIMARY KEY(formateurs_id)
+      );
+
+      CREATE TABLE Module_formation(
+        Module_id SMALLINT,
+        Module_name VARCHAR(100)  NOT NULL,
+        formation_id SMALLINT NOT NULL,
+        Module_startdate DATE NOT NULL,
+        Module_enddate DATE NOT NULL,
+        Module_status VARCHAR(50)  NOT NULL,
+        PRIMARY KEY(Module_id)
+      );
+
+      CREATE TABLE course_material(
+        course_material_id SMALLINT,
+        course_material_name VARCHAR(50)  NOT NULL,
+        course_material_file VARCHAR(100)  NOT NULL,
+        course_material_status VARCHAR(50)  NOT NULL,
+        course_material_type VARCHAR(50)  NOT NULL,
+        module_id SMALLINT NOT NULL,
+        PRIMARY KEY(course_material_id)
+      );
+
+      CREATE TABLE Evaluation(
+        Evaluation_id SMALLINT,
+        module_id SMALLINT NOT NULL,
+        apprenant_id VARCHAR(50)  NOT NULL,
+        evaluation_date DATE NOT NULL,
+        evaluation_status VARCHAR(50)  NOT NULL,
+        formationid SMALLINT NOT NULL,
+        PRIMARY KEY(Evaluation_id)
+      );
+
+      CREATE TABLE Formation(
+        formation_Id SMALLINT,
+        formation_name VARCHAR(50)  NOT NULL,
+        formation_description VARCHAR(250)  NOT NULL,
+        formation_startdate DATE NOT NULL,
+        formation_enddate DATE NOT NULL,
+        formation_status VARCHAR(50)  NOT NULL,
+        formateurs_id SMALLINT NOT NULL,
+        PRIMARY KEY(formation_Id),
+        UNIQUE(formation_name),
+        FOREIGN KEY(formateurs_id) REFERENCES formateur(formateurs_id)
+      );
+
+      CREATE TABLE participer(
+        apprenant_id SMALLINT,
+        formationindex SMALLINT NOT NULL,
+        formation_Id SMALLINT NOT NULL,
+        PRIMARY KEY(apprenant_id),
+        FOREIGN KEY(apprenant_id) REFERENCES apprenant(apprenant_id),
+        FOREIGN KEY(formation_Id) REFERENCES Formation(formation_Id)
+      );
+
+      CREATE TABLE course(
+        formation_Id SMALLINT,
+        Module_id SMALLINT,
+        PRIMARY KEY(formation_Id, Module_id),
+        FOREIGN KEY(formation_Id) REFERENCES Formation(formation_Id),
+        FOREIGN KEY(Module_id) REFERENCES Module_formation(Module_id)
+      );
+
+      CREATE TABLE include(
+        Module_id SMALLINT,
+        course_material_id SMALLINT,
+        PRIMARY KEY(Module_id, course_material_id),
+        FOREIGN KEY(Module_id) REFERENCES Module_formation(Module_id),
+        FOREIGN KEY(course_material_id) REFERENCES course_material(course_material_id)
+      );
+
+      CREATE TABLE evaluae(
+        apprenant_id SMALLINT,
+        Evaluation_id SMALLINT,
+        apprenant_evaluationindex SMALLINT NOT NULL,
+        PRIMARY KEY(apprenant_id, Evaluation_id),
+        FOREIGN KEY(apprenant_id) REFERENCES apprenant(apprenant_id),
+        FOREIGN KEY(Evaluation_id) REFERENCES Evaluation(Evaluation_id)
+      );
+
+      CREATE TABLE exame(
+        Module_id SMALLINT,
+        Evaluation_id SMALLINT,
+        evaluationmoduleindex SMALLINT NOT NULL,
+        PRIMARY KEY(Module_id, Evaluation_id),
+        FOREIGN KEY(Module_id) REFERENCES Module_formation(Module_id),
+        FOREIGN KEY(Evaluation_id) REFERENCES Evaluation(Evaluation_id)
+      );
+
+  
+```
   <p align = 'center' ><img src="Img/mpd.png" width="200" alt="merise Logo" /> </P>
 
 ## Breif
